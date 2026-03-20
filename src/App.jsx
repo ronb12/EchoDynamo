@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { UIProvider } from './contexts/UIContext';
@@ -46,6 +46,8 @@ const buildStorageKey = (prefix, version) => {
 function AppContent() {
   const { user, loading } = useAuth();
   const {
+    openLoginModal,
+    openSignUpModal,
     showLoginModal,
     showSignUpModal,
     showSettingsModal,
@@ -83,6 +85,7 @@ function AppContent() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [updateAvailableVersion, setUpdateAvailableVersion] = useState('');
+  const authDeepLinkHandled = useRef(false);
 
   const hasReloadedForVersion = useCallback((version) => {
     if (!version) {return false;}
@@ -137,6 +140,42 @@ function AppContent() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // /login, /signin, ?login=1 → open login modal (requires SPA fallback on host, e.g. Vercel)
+  useEffect(() => {
+    if (!isInitialized || loading || user) {
+      return;
+    }
+    if (authDeepLinkHandled.current) {
+      return;
+    }
+
+    const rawPath = window.location.pathname || '/';
+    const path = rawPath.replace(/\/+$/, '') || '/';
+    const params = new URLSearchParams(window.location.search);
+    const loginQ = String(params.get('login') || '').toLowerCase();
+    const signupQ = String(params.get('signup') || '').toLowerCase();
+    const wantsLogin =
+      path === '/login' ||
+      path === '/signin' ||
+      ['1', 'true', 'yes'].includes(loginQ);
+    const wantsSignup =
+      path === '/signup' ||
+      path === '/register' ||
+      ['1', 'true', 'yes'].includes(signupQ);
+
+    if (!wantsLogin && !wantsSignup) {
+      return;
+    }
+
+    authDeepLinkHandled.current = true;
+    if (wantsSignup) {
+      openSignUpModal();
+    } else {
+      openLoginModal();
+    }
+    window.history.replaceState({}, '', '/');
+  }, [isInitialized, loading, user, openLoginModal, openSignUpModal]);
 
   // Listen for service worker version messages to ensure latest build is displayed
   useEffect(() => {

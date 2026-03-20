@@ -387,3 +387,110 @@
     white-space: nowrap !important;
   }
 }
+
+/* ============================================================
+   ADA / WCAG 2.1 AA — Global Accessibility Styles
+   ============================================================ */
+
+/* Screen-reader only utility — visually hidden but readable by AT */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Skip link — visible on focus for keyboard users (WCAG 2.4.1) */
+.skip-link:focus {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+  z-index: 9999 !important;
+  background: var(--primary-color, #0084ff) !important;
+  color: #fff !important;
+  padding: 10px 20px !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  border-radius: 0 0 8px 0 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  outline: 3px solid #fff !important;
+}
+
+/* Focus visible — WCAG 2.4.7 Focus Visible */
+*:focus-visible {
+  outline: 3px solid var(--primary-color, #0084ff) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* Remove default outline only when focus-visible is supported */
+*:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+/* Buttons — minimum touch target 44x44px (WCAG 2.5.5) */
+button, [role="button"], a[href], input[type="submit"], input[type="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Exception for inline icon-only buttons already sized correctly */
+.modal-close,
+.search-clear-btn,
+.chat-action-btn,
+.reaction-btn {
+  min-height: 36px;
+  min-width: 36px;
+}
+
+/* Colour contrast helpers — ensure text is always readable */
+.chat-preview { color: var(--text-secondary, #b0b8c1) !important; }
+.chat-time { color: var(--text-secondary, #b0b8c1) !important; }
+.hero-stat-label { color: #a8b2bd !important; }
+
+/* Animated content — respect prefers-reduced-motion (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .hero-logo-ring { animation: none !important; }
+  .landing-page { transition: none !important; opacity: 1 !important; transform: none !important; }
+  .feature-card { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  .btn, button {
+    border: 2px solid ButtonText !important;
+  }
+  .chat-item.active {
+    outline: 2px solid Highlight !important;
+  }
+  .unread-count {
+    border: 1px solid ButtonText !important;
+  }
+}
+
+/* Link underline for accessibility (WCAG 1.4.1) */
+.footer-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+}
+.footer-links a:hover, .footer-links a:focus {
+  text-decoration: none !important;
+  opacity: 0.85;
+}

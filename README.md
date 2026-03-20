@@ -2,6 +2,12 @@
 
 EchoDynamo is a cutting-edge messaging application that combines enterprise-grade security, business features, and family safety controls in one powerful platform. Built with React, Firebase, and Stripe integration.
 
+### Dependency & security hygiene (maint. pass — Mar 2026)
+- **`npm audit`:** clean for the **root SPA**, **`/functions`**, and **`/server`** after this refresh (run `npm install` in each folder on a fresh clone).
+- **Root app:** removed unused **`jspdf`** (critical advisory surface); bumped **`firebase`**; moved **`firebase-admin`** to **devDependencies** (only scripts/tooling need it — the Vite client does not bundle it). Added **`baseline-browser-mapping`** for up-to-date baseline data with Vite legacy builds. **`overrides`** pin **`@tootallnate/once`** for patched transitive dependencies.
+- **Cloud Functions:** **`firebase-admin@^12.7.0`** aligns with **`firebase-functions@5`** peer range; same **`overrides`** applied. Consider upgrading to **`firebase-functions@7`** later for first-class Admin 13 peers (requires API review).
+- **Server:** Stripe/Express stack updated via **`npm audit fix`** (lockfile refreshed).
+
 ## 🚀 Key Features
 
 ### 💬 Messaging & Collaboration

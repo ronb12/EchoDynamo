@@ -323,3 +323,67 @@
     gap: 0.5rem !important;
   }
 }
+
+/* ── Mobile sidebar refinement — smaller avatars, better name truncation ── */
+@media (max-width: 768px) {
+  /* Tighter avatar — 42px leaves more room for name */
+  .chat-avatar,
+  .chat-avatar img {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+  }
+
+  /* Ensure chat-item is a proper flex row with no overflow */
+  .chat-item {
+    overflow: hidden !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Give chat-info maximum possible space */
+  .chat-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 42px - 64px - 1.5rem) !important;
+  }
+
+  /* Name — use full width, only ellipsis when truly needed */
+  .chat-name {
+    display: block !important;
+    width: 100% !important;
+    font-size: 0.92rem !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Preview — same */
+  .chat-preview {
+    display: block !important;
+    width: 100% !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-top: 2px !important;
+    opacity: 0.55 !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Meta — tighter fixed width */
+  .chat-meta {
+    flex: 0 0 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+  }
+
+  .chat-time {
+    font-size: 0.7rem !important;
+    text-align: right !important;
+    white-space: nowrap !important;
+  }
+}

@@ -84,7 +84,7 @@ export default function PrivacyPolicyModal() {
                 We implement industry-standard security measures to protect your information:
               </p>
               <ul style={{ marginLeft: '1.5rem', marginBottom: '1rem' }}>
-                <li>End-to-end encryption for messages</li>
+                <li>encrypted for messages</li>
                 <li>Secure authentication protocols</li>
                 <li>Regular security audits and updates</li>
                 <li>Access controls and data encryption at rest</li>

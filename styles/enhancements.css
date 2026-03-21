@@ -590,3 +590,31 @@ button, [role="button"], a[href], input[type="submit"], input[type="button"] {
     height: 100% !important;
   }
 }
+
+/* ── Mobile sidebar — push chat list DOWN below search box ── */
+@media (max-width: 768px) {
+  /* The sidebar-nav starts immediately after the header (52px).
+     But the search bar inside the header is 46px taller than the header itself.
+     So we add top-padding equal to that overhang so chats start below the search box. */
+  .sidebar-nav {
+    padding-top: 52px !important;
+  }
+
+  /* Ensure the search container doesn't clip — let it visually sit above the list */
+  .sidebar-header {
+    position: relative !important;
+    z-index: 10 !important;
+    overflow: visible !important;
+  }
+
+  /* The sidebar itself must not clip its header overflow */
+  .sidebar {
+    overflow: visible !important;
+  }
+
+  /* But the nav must still scroll within bounds */
+  .sidebar-nav {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}

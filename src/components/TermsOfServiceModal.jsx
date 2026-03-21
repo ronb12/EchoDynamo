@@ -57,8 +57,8 @@ We reserve the right, but are not obligated, to remove User Content that violate
   },
   {
     id: 'encryption',
-    title: '6. End-to-End Encryption & Privacy',
-    content: `EchoDynamo provides end-to-end encryption for messages. This means that message contents are encrypted on your device and can only be decrypted by the intended recipient. We do not have access to the content of your encrypted messages.
+    title: '6. encrypted & Privacy',
+    content: `EchoDynamo provides encrypted for messages. This means that message contents are encrypted on your device and can only be decrypted by the intended recipient. We do not have access to the content of your encrypted messages.
 
 While we implement strong security measures, no method of transmission over the Internet is 100% secure. We cannot guarantee absolute security of your data.
 

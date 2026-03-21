@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { chatService } from '../services/chatService';
 
 const FEATURES = [
-  { icon: '🔐', title: 'End-to-End Encryption', desc: 'Every message encrypted with AES-256. No one — not even us — can read your chats.' },
+  { icon: '🔐', title: 'Secure Messaging', desc: 'Messages are protected with AES-256 encryption in transit and at rest, keeping your conversations private.' },
   { icon: '🎥', title: 'HD Voice & Video', desc: 'Crystal-clear WebRTC calls with screen sharing, right inside the conversation.' },
   { icon: '💸', title: 'Built-in Payments', desc: 'Send money, split bills, and manage subscriptions via Stripe — without leaving the app.' },
   { icon: '🛡️', title: 'Family Safety', desc: 'Parent-child linked accounts, contact approvals, and real-time activity monitoring.' },
@@ -13,7 +13,7 @@ const FEATURES = [
 ];
 
 const STATS = [
-  { value: '256-bit', label: 'AES Encryption' },
+  { value: 'Private', label: 'By Design' },
   { value: '< 100ms', label: 'Message Latency' },
   { value: '99.9%', label: 'Uptime SLA' },
   { value: 'Zero', label: 'Ads, Ever' },
@@ -62,7 +62,7 @@ export default function LandingPage() {
           {/* Hero */}
           <section className="hero-section" aria-labelledby="hero-heading">
             <div className="hero-badge" role="note" aria-label="Security notice">
-              🔒 End-to-end encrypted by default
+              🔒 Secure & private messaging
             </div>
             <div className="hero-logo-wrap" aria-hidden="true">
               <div className="hero-logo-ring">
@@ -74,7 +74,7 @@ export default function LandingPage() {
               <span className="hero-title-sub">Messaging that means business</span>
             </h1>
             <p className="hero-desc">
-              Secure, encrypted conversations with voice &amp; video calls, built-in payments,
+              Secure, private conversations with voice &amp; video calls, built-in payments,
               family safety tools, and a native app experience — all in one place.
             </p>
             <div className="hero-cta" role="group" aria-label="Get started options">

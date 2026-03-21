@@ -523,3 +523,70 @@ button, [role="button"], a[href], input[type="submit"], input[type="button"] {
   outline-offset: 2px !important;
   box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
 }
+
+/* ── Mobile sidebar header — fix search bar overlapping chat list ── */
+@media (max-width: 768px) {
+  /* Sidebar must be a flex column so header stays fixed-height at top */
+  .sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100vh !important;
+    height: 100dvh !important; /* dynamic viewport height for mobile browsers */
+    overflow: hidden !important;
+  }
+
+  /* Header: fixed height, never shrinks, search included inside */
+  .sidebar-header {
+    flex: 0 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0.75rem 1rem !important;
+    gap: 0.5rem !important;
+    background: var(--background-color, #111b21) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+    /* Prevent any overlap */
+    position: relative !important;
+    z-index: 2 !important;
+  }
+
+  /* Nav / chat list: takes remaining space, scrolls internally */
+  .sidebar-nav {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    /* Push content below the header — no padding-top needed since flex handles it */
+    padding-top: 0 !important;
+  }
+
+  /* Footer: fixed height at bottom */
+  .sidebar-footer {
+    flex: 0 0 auto !important;
+    padding: 0.75rem 1rem !important;
+    background: var(--background-color, #111b21) !important;
+    border-top: 1px solid rgba(255,255,255,0.07) !important;
+  }
+
+  /* Search bar — full width, sits inside header naturally */
+  .search-container {
+    width: 100% !important;
+    position: relative !important; /* not sticky, not absolute */
+    top: auto !important;
+  }
+
+  .search-input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 16px !important; /* prevent iOS zoom */
+  }
+
+  /* Chat list — no extra top padding, header above handles spacing */
+  .chat-list {
+    padding: 0.25rem 0 !important;
+    margin: 0 !important;
+  }
+
+  /* nav-section fills height */
+  .nav-section {
+    height: 100% !important;
+  }
+}

@@ -12,34 +12,38 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
           cache-dependency-path: server/package-lock.json
-      
+
       - name: Install dependencies
         working-directory: ./server
         run: npm ci
-      
+
       - name: Build (if using Vite build)
         working-directory: ./server
         run: npm run build:prod || echo "Build step optional"
         continue-on-error: true
-      
-      - name: Deploy to Railway
-        if: env.RAILWAY_TOKEN != ''
-        uses: bervProject/railway-deploy@master
+
+      - name: Install Railway CLI
+        if: ${{ secrets.RAILWAY_TOKEN != '' && secrets.RAILWAY_SERVICE != '' }}
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway with CLI
+        if: ${{ secrets.RAILWAY_TOKEN != '' && secrets.RAILWAY_SERVICE != '' }}
+        working-directory: ./server
+        run: railway up --service "$RAILWAY_SERVICE" --ci
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
-      
-      # Add other deployment steps for Render, Heroku, etc.
 
+      # Add other deployment steps for Render, Heroku, etc.
 

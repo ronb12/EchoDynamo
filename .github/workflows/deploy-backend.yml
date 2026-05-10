@@ -12,6 +12,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
 
     steps:
       - name: Checkout code
@@ -34,16 +37,12 @@ jobs:
         continue-on-error: true
 
       - name: Install Railway CLI
-        if: ${{ secrets.RAILWAY_TOKEN != '' && secrets.RAILWAY_SERVICE != '' }}
+        if: ${{ env.RAILWAY_TOKEN != '' && env.RAILWAY_SERVICE != '' }}
         run: npm install -g @railway/cli
 
       - name: Deploy to Railway with CLI
-        if: ${{ secrets.RAILWAY_TOKEN != '' && secrets.RAILWAY_SERVICE != '' }}
+        if: ${{ env.RAILWAY_TOKEN != '' && env.RAILWAY_SERVICE != '' }}
         working-directory: ./server
         run: railway up --service "$RAILWAY_SERVICE" --ci
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
 
       # Add other deployment steps for Render, Heroku, etc.
-

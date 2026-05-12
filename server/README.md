@@ -2,6 +2,12 @@
 
 Production-ready backend API server for Stripe payment integration in EchoChat, optimized with Vite.
 
+## Status
+
+- This is the actively maintained server-side workflow in the repository.
+- Default root deployment commands now target Vercel first.
+- Older Firebase Hosting / Functions instructions elsewhere in the repo should be treated as legacy unless a task explicitly calls for them.
+
 ## Features
 
 - ✅ Vite-based build system for production optimization
@@ -59,8 +65,8 @@ STRIPE_SECRET_KEY=sk_live_your_live_secret_key_here
 VITE_STRIPE_SECRET_KEY=sk_live_your_live_secret_key_here
 
 # Production CORS
-CORS_ORIGIN=https://echochat-messaging.web.app,https://echochat-messaging.firebaseapp.com
-FRONTEND_URL=https://echochat-messaging.web.app
+CORS_ORIGIN=https://echodynamo.vercel.app
+FRONTEND_URL=https://echodynamo.vercel.app
 
 # Production Webhook Secret
 STRIPE_WEBHOOK_SECRET=whsec_your_production_webhook_secret
@@ -187,7 +193,7 @@ The build creates an optimized `dist/server.js` file ready for production deploy
 1. **Set environment variables** on your hosting platform:
    - `NODE_ENV=production`
    - `STRIPE_SECRET_KEY=sk_live_...`
-   - `CORS_ORIGIN=https://echochat-messaging.web.app`
+   - `CORS_ORIGIN=https://echodynamo.vercel.app`
    - `STRIPE_WEBHOOK_SECRET=whsec_...`
 
 2. **Deploy:**

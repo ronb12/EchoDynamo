@@ -1,6 +1,15 @@
 # EchoDynamo - Advanced Secure Messaging Platform
 
-EchoDynamo is a cutting-edge messaging application that combines enterprise-grade security, business features, and family safety controls in one powerful platform. Built with React, Firebase, and Stripe integration.
+EchoDynamo is a cutting-edge messaging application that combines enterprise-grade security, business features, and family safety controls in one powerful platform. The repository is currently in transition: the operational deployment target is Vercel-first, while parts of the application code and legacy assets still reference Firebase.
+
+## Current Platform Status
+
+- Default deployment path: Vercel (`npm run deploy`, `npm run deploy:vercel`)
+- Monitoring classification: `Vercel + Neon`
+- Neon health check: `GET https://echodynamo.vercel.app/api/health`
+- Legacy Firebase assets remain in-repo for staged migration and rollback support
+- Do not treat `firebase.json` or `functions/` as the primary production path without an explicit migration task
+- Architecture notes: [`docs/CURRENT_ARCHITECTURE.md`](./docs/CURRENT_ARCHITECTURE.md)
 
 ### Dependency & security hygiene (maint. pass — Mar 2026)
 - **`npm audit`:** clean for the **root SPA**, **`/functions`**, and **`/server`** after this refresh (run `npm install` in each folder on a fresh clone).
@@ -59,19 +68,16 @@ EchoDynamo is a cutting-edge messaging application that combines enterprise-grad
 - **Routing**: React Router (if needed)
 
 ### Backend & Services
-- **Backend API**: Firebase Cloud Functions (Express.js)
-- **Database**: Firebase Firestore (NoSQL)
-- **Authentication**: Firebase Authentication
-- **Storage**: Firebase Storage
-- **Messaging**: Firebase Cloud Messaging (FCM)
+- **Current deployment target**: Vercel-hosted frontend and server workflows
+- **Operational monitoring target**: Vercel + Neon
+- **Legacy runtime still present in source**: Firebase Authentication, Firestore, Storage, and Cloud Messaging
 - **Payments**: Stripe Connect API
 - **Encryption**: Web Crypto API (AES-256-GCM, PBKDF2)
 
 ### Infrastructure
-- **Hosting**: Firebase Hosting
-- **Functions**: Firebase Cloud Functions
-- **CDN**: Firebase CDN
-- **SSL**: Automatic SSL certificates
+- **Primary deployment path**: Vercel
+- **Legacy deployment assets retained**: Firebase Hosting / Functions configs
+- **SSL**: Managed by hosting platform
 - **PWA**: Service Workers, Web App Manifest
 
 ## 📱 Progressive Web App (PWA)
@@ -114,10 +120,11 @@ EchoDynamo automatically adapts to all screen sizes:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
-- Firebase account
+- Vercel account for the current deployment path
 - Stripe account (for business features)
+- Firebase account only if you are intentionally working on the legacy runtime pieces
 - Modern web browser
 
 ### Installation
@@ -133,13 +140,10 @@ EchoDynamo automatically adapts to all screen sizes:
    npm install
    ```
 
-3. **Configure Firebase**
-   - Create a new Firebase project
-   - Enable Authentication (Email/Password, Google)
-   - Create Firestore database
-   - Enable Storage
-   - Configure Cloud Messaging
-   - Update `src/services/firebaseConfig.js` with your config
+3. **Review platform status before configuring services**
+   - Read [`docs/CURRENT_ARCHITECTURE.md`](./docs/CURRENT_ARCHITECTURE.md)
+   - Use Vercel as the default deployment target
+   - Treat Firebase setup as legacy or transitional unless your task is specifically migrating or maintaining those flows
 
 4. **Configure Stripe** (for business features)
    - Create a Stripe account
@@ -153,29 +157,28 @@ EchoDynamo automatically adapts to all screen sizes:
 5. **Configure Environment Variables**
    Create a `.env` file:
    ```
-   VITE_FIREBASE_API_KEY=your_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   VITE_FIREBASE_APP_ID=your_app_id
+   DATABASE_URL=postgresql://...
+   POSTGRES_URL=postgresql://...
+   NEON_DATABASE_URL=postgresql://...
    VITE_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
    VITE_API_BASE_URL=https://your-api-url.com
    ```
+
+   On Vercel, the database URL aliases should be configured for Production, Preview, and Development. Production and Preview are stored as sensitive variables.
+
+   Add Firebase variables only if you are maintaining the legacy client-side Firebase flows that still exist in `src/services/firebaseConfig.js`.
 
 6. **Build the project**
    ```bash
    npm run build
    ```
 
-7. **Deploy to Firebase**
+7. **Deploy using the current default path**
    ```bash
-   # Deploy frontend
-   firebase deploy --only hosting
-   
-   # Deploy backend API (Firebase Functions)
-   firebase deploy --only functions
+   npm run deploy
    ```
+
+   Legacy Firebase deployment commands remain available under `legacy:*` npm scripts for rollback or migration work.
 
 ### Development
 
@@ -234,16 +237,19 @@ EchoDynamo/
 │   │   ├── useChat.js
 │   │   └── useUI.js
 │   └── App.jsx              # Main app component
-├── functions/               # Firebase Cloud Functions
-│   ├── index.js            # Express.js API
+├── functions/               # Legacy Firebase Cloud Functions reference
+│   ├── index.js            # Older Express.js API path
 │   └── package.json
+├── server/                  # Current server-side workflow
+│   ├── server.js
+│   └── README.md
 ├── public/                  # Static assets
 │   ├── icons/              # App icons
 │   ├── sw.js              # Service worker
 │   └── manifest.json      # PWA manifest
-├── firebase.json           # Firebase configuration
-├── firestore.rules         # Firestore security rules
-├── storage.rules           # Storage security rules
+├── firebase.json           # Legacy Firebase deployment configuration
+├── firestore.rules         # Legacy Firestore security rules
+├── storage.rules           # Legacy Storage security rules
 ├── vite.config.js          # Vite configuration
 └── package.json            # Dependencies
 ```
@@ -251,12 +257,7 @@ EchoDynamo/
 ## 🔧 Configuration
 
 ### Firebase Setup
-1. Create a Firebase project
-2. Enable Authentication (Email/Password, Google)
-3. Create Firestore database
-4. Enable Storage
-5. Configure Cloud Messaging
-6. Update `src/services/firebaseConfig.js`
+Only do this when you are intentionally maintaining or migrating the legacy Firebase-backed flows that still remain in source.
 
 ### Stripe Setup
 1. Create a Stripe account
@@ -309,32 +310,26 @@ Create a `.env` file (see Installation section above)
 
 ## 🚀 Deployment
 
-### Firebase Hosting
-```bash
-npm run build
-firebase deploy --only hosting
-```
-
 ### Vercel Production
 ```bash
-# Deploy latest build and automatically point alias to echochat-app.vercel.app
-npm run deploy:prod
+# Default production deployment path
+npm run deploy
 
-# Optional: override alias domain
-npm run deploy:prod your-alias.vercel.app
+# Alias-based Vercel deployment
+npm run deploy:prod
 ```
 
-### Firebase Functions (Backend API)
+### Legacy Firebase Deployments
 ```bash
-cd functions
-npm install
-firebase deploy --only functions
+# Legacy hosting
+npm run legacy:deploy:hosting
+
+# Legacy functions
+npm run legacy:deploy:functions
 ```
 
 ### Custom Domain
-1. Add custom domain in Firebase Console
-2. Update DNS records
-3. SSL certificate automatically provisioned
+Manage the current production domain through Vercel project settings and DNS.
 
 ## 🌐 Browser Support
 
@@ -391,9 +386,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📈 API Architecture
 
-### EchoDynamo API (Firebase Functions)
-- **Base URL**: `https://echochat-messaging.web.app/api`
-- **Health Check**: `GET /health`
+### EchoDynamo API
+- **Current deployment intent**: Vercel-hosted API surface
+- **Legacy API reference**: Firebase Functions artifacts remain in `functions/`
+- **Health Check**: `GET /api/health` on Vercel, `GET /health` when running the server directly
+- **Database Health**: The health response verifies Neon reachability when a database URL env var is configured
 - **Stripe Endpoints**: `/api/stripe/*`
 - **Payment Processing**: Stripe Connect integration
 - **Webhooks**: Stripe webhook handling
@@ -410,6 +407,8 @@ EchoDynamo automatically updates:
 
 **EchoDynamo** - The future of secure messaging. Built with ❤️ by Bradley Virtual Solutions, LLC.
 
-**Live URL**: https://echochat-messaging.web.app
+**Primary deployment path**: Vercel
+
+**Legacy live URL reference**: https://echochat-messaging.web.app
 
 **Repository**: https://github.com/ronb12/EchoDynamo

@@ -28,6 +28,7 @@ global.Buffer = bufferModule.Buffer;
 const express = require('express');
 const cors = require('cors');
 const Stripe = require('stripe');
+const { neon } = require('@neondatabase/serverless');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -42,6 +43,53 @@ if (!stripeKey) {
 const stripe = stripeKey ? new Stripe(stripeKey, {
   apiVersion: '2023-10-16',
 }) : null;
+
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.NEON_DATABASE_URL;
+let sqlClient = null;
+
+function getSqlClient() {
+  if (!databaseUrl) {
+    return null;
+  }
+
+  if (!sqlClient) {
+    sqlClient = neon(databaseUrl);
+  }
+
+  return sqlClient;
+}
+
+async function getDatabaseHealth() {
+  const sql = getSqlClient();
+
+  if (!sql) {
+    return {
+      configured: false,
+      status: 'not_configured'
+    };
+  }
+
+  const startedAt = Date.now();
+  const [result] = await sql`
+    select
+      current_database() as database_name,
+      current_user as role_name,
+      version() as postgres_version,
+      now() as checked_at
+  `;
+
+  return {
+    configured: true,
+    status: 'ok',
+    database: result.database_name,
+    role: result.role_name,
+    checkedAt: result.checked_at,
+    latencyMs: Date.now() - startedAt
+  };
+}
 
 // Middleware
 // CORS configuration - allow multiple origins including Firebase hosting
@@ -85,10 +133,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+// Health check. `/api/health` is the production Vercel path; `/health` helps local server checks.
+async function healthHandler(req, res) {
+  const response = {
+    status: 'ok',
+    service: 'echodynamo',
+    timestamp: new Date().toISOString(),
+    database: null
+  };
+
+  try {
+    response.database = await getDatabaseHealth();
+  } catch (error) {
+    console.error('Database health check failed:', error);
+    response.status = 'degraded';
+    response.database = {
+      configured: true,
+      status: 'error',
+      error: error.message || 'Database health check failed'
+    };
+  }
+
+  res.status(response.status === 'ok' ? 200 : 503).json(response);
+}
+
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
 // ==================== Stripe Connect Account Routes ====================
 
@@ -1663,4 +1733,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-

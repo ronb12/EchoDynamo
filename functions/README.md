@@ -1,10 +1,12 @@
-# EchoChat API
+# EchoChat API (Legacy Firebase Functions Reference)
 
-Complete backend API for EchoChat messaging platform, built with Firebase Cloud Functions.
+This directory contains the older Firebase Functions implementation that remains in the repository for reference and rollback support.
 
-## About EchoChat API
+## Status
 
-EchoChat API is the backend service that powers EchoChat's payment processing, subscription management, and Stripe integration. It runs on Firebase Cloud Functions and is fully integrated with your Firebase hosting.
+- This is not the default production deployment path for the current repo.
+- Root deploy commands now target Vercel first.
+- Keep this directory only for legacy maintenance, comparison, or staged migration work.
 
 ## Structure
 
@@ -80,17 +82,17 @@ app.get('/api/users/:userId', async (req, res) => {
 });
 ```
 
-## Deployment
+## Legacy deployment
 
 ```bash
-# Deploy functions
+# Deploy legacy functions
 firebase deploy --only functions
 
-# Or deploy everything
+# Or deploy all legacy Firebase resources
 firebase deploy
 ```
 
-## Local Development
+## Local legacy development
 
 ```bash
 # Start emulators
@@ -119,9 +121,11 @@ const frontendUrl = functions.config().app?.frontend_url;
 
 ## API URL
 
-Your API is available at:
+Legacy Firebase endpoints were exposed at:
 - Production: `https://echochat-messaging.web.app/api/*`
 - Local: `http://localhost:5001/YOUR_PROJECT/us-central1/api`
+
+For current repo operations, prefer the Vercel deployment path documented in the root README and [`docs/CURRENT_ARCHITECTURE.md`](../docs/CURRENT_ARCHITECTURE.md).
 
 ## Adding More Features
 
